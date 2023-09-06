@@ -1,7 +1,7 @@
 interface StyleProps {
   as?: string;
   type?: string;
-  columns?: number;
+  columns?: string;
   active?: boolean;
   position?: {
     x: number;

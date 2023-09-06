@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 
-const useCloseModal = (close?: () => void) => {
+const useOutsideModalClick = (close?: () => void) => {
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node | null))
-        close?.();
+      if (ref.current && !ref.current.contains(e.target as Node)) close?.();
     };
     document.addEventListener("click", handleClick, true);
     return () => document.removeEventListener("click", handleClick, true);
@@ -23,4 +22,4 @@ const useCloseModal = (close?: () => void) => {
 
   return { ref };
 };
-export default useCloseModal;
+export default useOutsideModalClick;

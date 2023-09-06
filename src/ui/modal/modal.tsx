@@ -8,7 +8,7 @@ import React, {
 import { HiXMark } from "react-icons/hi2";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
-import useCloseModal from "./use-close-modal";
+import useCloseModal from "../../utils/hooks/use-outside-modal-click";
 
 const StyledModal = styled.div`
   position: fixed;
