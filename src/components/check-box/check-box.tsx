@@ -24,8 +24,20 @@ const StyledCheckbox = styled.div`
     gap: 0.8rem;
   }
 `;
-
-function Checkbox({ checked, onChange, disabled = false, id, children }) {
+type CheckBoxProps = {
+  checked: boolean;
+  id: string;
+  disabled: boolean | undefined;
+  onChange: () => void;
+  children: string[];
+};
+const Checkbox: React.FC<CheckBoxProps> = ({
+  checked,
+  onChange,
+  id,
+  disabled = false,
+  children
+}) => {
   return (
     <StyledCheckbox>
       <input
@@ -38,6 +50,6 @@ function Checkbox({ checked, onChange, disabled = false, id, children }) {
       <label htmlFor={!disabled ? id : ""}>{children}</label>
     </StyledCheckbox>
   );
-}
+};
 
 export default Checkbox;

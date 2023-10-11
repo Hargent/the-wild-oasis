@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Logo from "../logo/logo";
 import MainNav from "../main-nav/main-nav";
+import Uploader from "../../data/uploader";
 
 const StyledSideBar = styled.aside`
   background-color: var(--color-grey-0);
@@ -19,6 +20,8 @@ const SideBar: React.FC = () => {
     <StyledSideBar>
       <Logo />
       <MainNav />
+
+      <Uploader />
     </StyledSideBar>
   );
 };

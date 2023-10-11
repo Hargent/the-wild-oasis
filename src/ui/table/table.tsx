@@ -1,6 +1,5 @@
 import React, { createContext, useContext } from "react";
 
-import { CabinData } from "../../utils/types/cabin";
 import { StyleProps } from "../../utils/types/styled-component-props";
 import styled from "styled-components";
 
@@ -72,9 +71,9 @@ type RowProps = {
 type HeaderProps = {
   children: React.ReactElement[];
 };
-type BodyProps = {
-  data: CabinData[];
-  render: (cabin: CabinData) => React.ReactElement;
+type BodyProps<T> = {
+  data: T[];
+  render: (renderData: T) => React.ReactElement;
 };
 type FooterProps = {
   children: React.ReactElement;
@@ -114,13 +113,14 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
     </StyledHeader>
   );
 };
-const Body: React.FC<BodyProps> = ({ data, render }) => {
+function Body<T>({ data, render }: BodyProps<T>) {
   if (data.length === 0) {
     return <Empty>No data to show at the moment</Empty>;
   }
+  
 
   return <StyledBody>{data.map(render)}</StyledBody>;
-};
+}
 const Footer: React.FC<FooterProps> = ({ children }) => {
   return <StyledFooter>{children}</StyledFooter>;
 };

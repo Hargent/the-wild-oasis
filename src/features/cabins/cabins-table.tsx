@@ -5,6 +5,7 @@ import React from "react";
 import Spinner from "../../components/spinner/spinner";
 import Table from "../../ui/table/table";
 import useCabins from "./hooks/use-cabins";
+import { useSearchParams } from "react-router-dom";
 
 // import styled from "styled-components";
 
@@ -31,12 +32,46 @@ import useCabins from "./hooks/use-cabins";
 //   padding: 1.6rem 2.4rem;
 //
 // `;
-
+const FilterValues = {
+  All: "all",
+  NO_DISCOUNT: "no-discount",
+  WITH_DISCOUNT: "with-discount"
+};
 const CabinTable: React.FC = () => {
-  const { isLoading, cabins, error } = useCabins();
-  if (isLoading) return <Spinner />;
+  const { isLoading, cabins } = useCabins();
 
-  if (error) return <div>Error!!!</div>;
+  const [searchParams] = useSearchParams();
+  const sortBy = searchParams.get("sortBy") || "startDate-asc";
+  const filterValue = searchParams.get("discount") || "all";
+
+  // if (!cabins?.length) return <Empty resourceName={"bookings"} />;
+  // filter
+  let filteredCabins = cabins;
+  switch (filterValue) {
+    case FilterValues.All:
+      filteredCabins = cabins;
+      break;
+    case FilterValues.NO_DISCOUNT:
+      filteredCabins = cabins?.filter((cabin) => cabin.discount === 0);
+      break;
+    case FilterValues.WITH_DISCOUNT:
+      filteredCabins = cabins?.filter((cabin) => cabin.discount !== 0);
+      break;
+    default:
+      filteredCabins = cabins;
+  }
+
+  // sort
+  const [field, direction] = sortBy.split("-");
+  const modifier = direction === "asc" ? 1 : -1;
+  const sortedCabins =
+    filteredCabins?.sort(
+      (a, b) =>
+        (a[field] > b[field] ? 1 : b[field] > a[field] ? -1 : 0) * modifier
+    ) ?? [];
+
+  //
+  if (isLoading) return <Spinner />;
 
   return (
     <Menus>
@@ -50,9 +85,9 @@ const CabinTable: React.FC = () => {
           <div></div>
         </Table.Header>
         <Table.Body
-          data={cabins as CabinData[]}
-          render={(cabin: CabinData) => (
-            <CabinRow cabinData={cabin} key={cabin.id} />
+          data={sortedCabins as CabinData[]}
+          render={(renderData: CabinData) => (
+            <CabinRow cabinData={renderData} key={renderData.id} />
           )}
         />
         {/* {cabins?.map((cabin) => (

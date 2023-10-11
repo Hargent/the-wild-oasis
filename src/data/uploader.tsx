@@ -4,8 +4,9 @@ import Button from "../components/button/button";
 import { bookings } from "./data-bookings";
 import { cabins } from "./data-cabins";
 import { guests } from "./data-guests";
-import { subtractDates } from "../utils/helpers";
-import supabase from "../services/supabase";
+import styled from "styled-components";
+import { subtractDates } from "../utils/helpers/helpers";
+import { supabaseUSER } from "../services/supabase";
 import { useState } from "react";
 
 // const originalSettings = {
@@ -16,48 +17,49 @@ import { useState } from "react";
 // };
 
 async function deleteGuests() {
-  const { error } = await supabase.from("guests").delete().gt("id", 0);
+  const { error } = await supabaseUSER.from("guests").delete().gt("id", 0);
   if (error) console.log(error.message);
 }
 
 async function deleteCabins() {
-  const { error } = await supabase.from("cabins").delete().gt("id", 0);
+  const { error } = await supabaseUSER.from("cabins").delete().gt("id", 0);
   if (error) console.log(error.message);
 }
 
 async function deleteBookings() {
-  const { error } = await supabase.from("bookings").delete().gt("id", 0);
+  const { error } = await supabaseUSER.from("bookings").delete().gt("id", 0);
   if (error) console.log(error.message);
 }
 
 async function createGuests() {
-  const { error } = await supabase.from("guests").insert(guests);
+  const { error } = await supabaseUSER.from("guests").insert(guests);
   if (error) console.log(error.message);
 }
 
 async function createCabins() {
-  const { error } = await supabase.from("cabins").insert(cabins);
+  const { error } = await supabaseUSER.from("cabins").insert(cabins);
   if (error) console.log(error.message);
 }
 
 async function createBookings() {
-  // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
-  const { data: guestsIds } = await supabase
+  // Bookings need a guestID and a cabinID. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIDs and cabinIDs, and then replace the original IDs in the booking data with the actual ones from the DB
+  const { data: guestsIds } = await supabaseUSER
     .from("guests")
     .select("id")
     .order("id");
-  const allGuestIds = guestsIds.map((cabin) => cabin.id);
-  const { data: cabinsIds } = await supabase
+  const allguestIDs = guestsIds?.map((cabin) => cabin.id);
+  const { data: cabinsIds } = await supabaseUSER
     .from("cabins")
     .select("id")
     .order("id");
-  const allCabinIds = cabinsIds.map((cabin) => cabin.id);
+  const allcabinIDs = cabinsIds?.map((cabin) => cabin.id);
 
   const finalBookings = bookings.map((booking) => {
     // Here relying on the order of cabins, as they don't have and ID yet
-    const cabin = cabins.at(booking.cabinId - 1);
+    const cabin = cabins.at(booking.cabinID - 1);
     const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
+    const cabinPrice =
+      numNights * ((cabin?.regularPrice ?? 0) - (cabin?.discount ?? 0));
     const extrasPrice = booking.hasBreakfast
       ? numNights * 15 * booking.numGuests
       : 0; // hardcoded breakfast price
@@ -88,15 +90,15 @@ async function createBookings() {
       cabinPrice,
       extrasPrice,
       totalPrice,
-      guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
+      guestID: allguestIDs?.at(booking.guestID - 1),
+      cabinID: allcabinIDs?.at(booking.cabinID - 1),
       status
     };
   });
 
-  console.log(finalBookings);
+  // console.log(finalBookings);
 
-  const { error } = await supabase.from("bookings").insert(finalBookings);
+  const { error } = await supabaseUSER.from("bookings").insert(finalBookings);
   if (error) console.log(error.message);
 }
 
@@ -124,20 +126,19 @@ function Uploader() {
     await createBookings();
     setIsLoading(false);
   }
+  const StyledUploader = styled.div`
+    margin-top: auto;
+    background-color: #e0e7ff;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `;
 
   return (
-    <div
-      style={{
-        marginTop: "auto",
-        backgroundColor: "#e0e7ff",
-        padding: "8px",
-        borderRadius: "5px",
-        textAlign: "center",
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px"
-      }}
-    >
+    <StyledUploader>
       <h3>SAMPLE DATA</h3>
 
       <Button onClick={uploadAll} disabled={isLoading}>
@@ -147,7 +148,7 @@ function Uploader() {
       <Button onClick={uploadBookings} disabled={isLoading}>
         Upload bookings ONLY
       </Button>
-    </div>
+    </StyledUploader>
   );
 }
 

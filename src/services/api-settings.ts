@@ -1,7 +1,10 @@
-import supabase from "./supabase";
+import { supabaseADMIN, supabaseUSER } from "./supabase";
 
 export async function getSettings() {
-  const { data, error } = await supabase.from("settings").select("*").single();
+  const { data, error } = await supabaseUSER
+    .from("settings")
+    .select("*")
+    .single();
 
   if (error) {
     console.error(error);
@@ -14,7 +17,7 @@ export async function getSettings() {
 export async function updateSetting(newSetting: {
   [key: string]: number | string;
 }) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseADMIN
     .from("settings")
     .update(newSetting)
     // There is only ONE row of settings, and it has the ID=1, and so this is the updated one

@@ -1,9 +1,9 @@
+import { supabaseUSER, supabaseUrl } from "./supabase";
+
 import { FieldValues } from "react-hook-form";
-import supabase from "./supabase";
-import { supabaseUrl } from "./url";
 
 const getCabins = async () => {
-  const { data, error } = await supabase.from("cabins").select("*");
+  const { data, error } = await supabaseUSER.from("cabins").select("*");
   if (error) {
     console.error(error);
     throw new Error("Cabins could not be loaded");
@@ -12,7 +12,7 @@ const getCabins = async () => {
 };
 
 const deleteCabin = async (id: number) => {
-  const { error } = await supabase.from("cabins").delete().eq("id", id);
+  const { error } = await supabaseUSER.from("cabins").delete().eq("id", id);
 
   if (error) {
     console.error(error);
@@ -27,7 +27,7 @@ const createCabin = async (cabinData: FieldValues) => {
     ? cabinData.image
     : `${supabaseUrl}/storage/v1/object/public/cabin/${cabinData.image.name}`;
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseUSER
     .from("cabins")
     .insert([{ ...cabinData, image: imagePath }])
     .select();
@@ -49,7 +49,7 @@ const editCabin = async (cabinData: FieldValues, id: number) => {
 
   console.log(cabinId, created_at);
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseUSER
     .from("cabins")
     .update(newCabinData)
     .eq("id", id)
@@ -64,7 +64,7 @@ const editCabin = async (cabinData: FieldValues, id: number) => {
 };
 // Upload file using standard upload
 const uploadCabinImage = async (file: Blob) => {
-  const { data, error: storageError } = await supabase.storage
+  const { data, error: storageError } = await supabaseUSER.storage
     .from("cabin")
     .upload(file.name, file);
 

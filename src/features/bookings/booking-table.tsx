@@ -1,9 +1,15 @@
-import BookingRow from "./BookingRow";
-import Table from "../../ui/Table";
-import Menus from "../../ui/Menus";
+import { BookingData } from "../../utils/types/bookings-types";
+import BookingRow from "./booking-row";
+import Menus from "../../ui/menus/menus";
+import Pagination from "../../ui/pagination/pagination";
+import Spinner from "../../components/spinner/spinner";
+import Table from "../../ui/table/table";
+import useBookings from "./hooks/use-bookings";
 
 function BookingTable() {
-  const bookings = [];
+  const { isLoading, bookings, count } = useBookings();
+
+  if (isLoading) return <Spinner />;
 
   return (
     <Menus>
@@ -18,11 +24,14 @@ function BookingTable() {
         </Table.Header>
 
         <Table.Body
-          data={bookings}
-          render={(booking) => (
-            <BookingRow key={booking.id} booking={booking} />
+          data={bookings as BookingData[] | []}
+          render={(renderData: BookingData) => (
+            <BookingRow key={renderData.id} booking={renderData} />
           )}
         />
+        <Table.Footer>
+          <Pagination count={count ? count : 0} />
+        </Table.Footer>
       </Table>
     </Menus>
   );

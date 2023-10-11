@@ -82,7 +82,7 @@ type MenusProps = {
 
 type ListProps = {
   id: number;
-  children: React.ReactElement[];
+  children: React.ReactElement[] | React.ReactElement;
 };
 type ToggleProps = {
   id: number;

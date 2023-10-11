@@ -29,5 +29,16 @@ const Box = styled.div`
     color: var(--color-grey-500);
   }
 `;
+type ErrorProps = {
+  children: React.ReactElement;
+};
 
-export { Box, StyledErrorFallback };
+const Error: React.FC<ErrorProps> = ({ children }) => {
+  return (
+    <StyledErrorFallback>
+      <Box>{children}</Box>
+    </StyledErrorFallback>
+  );
+};
+// export { Box };
+export default Error;

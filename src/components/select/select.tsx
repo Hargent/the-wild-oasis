@@ -1,3 +1,4 @@
+import { OptionType } from "../../utils/types/data";
 import { StyleProps } from "../../utils/types/styled-component-props";
 import styled from "styled-components";
 
@@ -14,3 +15,26 @@ const StyledSelect = styled.select<StyleProps>`
   font-weight: 500;
   box-shadow: var(--shadow-sm);
 `;
+type SelectProps = {
+  options: OptionType[];
+  value: string;
+  type: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+};
+const Select: React.FC<SelectProps> = ({
+  options,
+
+  onChange,
+  ...props
+}) => {
+  return (
+    <StyledSelect {...props} onChange={onChange}>
+      {options.map((option) => (
+        <option value={option.value} key={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </StyledSelect>
+  );
+};
+export default Select;

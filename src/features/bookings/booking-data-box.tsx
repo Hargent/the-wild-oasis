@@ -1,16 +1,19 @@
-import styled from "styled-components";
-import { format, isToday } from "date-fns";
 import {
   HiOutlineChatBubbleBottomCenterText,
   HiOutlineCheckCircle,
   HiOutlineCurrencyDollar,
-  HiOutlineHomeModern,
+  HiOutlineHomeModern
 } from "react-icons/hi2";
+import { format, isToday } from "date-fns";
+import {
+  formatCurrency,
+  formatDistanceFromNow
+} from "../../utils/helpers/helpers";
 
-import DataItem from "../../ui/DataItem";
-import { Flag } from "../../ui/Flag";
-
-import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
+import { BookingData } from "../../utils/types/bookings-types";
+import DataItem from "../../components/data-item/data-item";
+import { Flag } from "../../components/flag/flag";
+import styled from "styled-components";
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -68,7 +71,10 @@ const Guest = styled.div`
   }
 `;
 
-const Price = styled.div`
+type PriceProps = {
+  isPaid: boolean;
+};
+const Price = styled.div<PriceProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -100,9 +106,11 @@ const Footer = styled.footer`
   color: var(--color-grey-500);
   text-align: right;
 `;
-
+type BookingDataBoxProps = {
+  booking: BookingData;
+};
 // A purely presentational component
-function BookingDataBox({ booking }) {
+const BookingDataBox: React.FC<BookingDataBoxProps> = ({ booking }) => {
   const {
     created_at,
     startDate,
@@ -116,7 +124,7 @@ function BookingDataBox({ booking }) {
     observations,
     isPaid,
     guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    cabins: { name: cabinName }
   } = booking;
 
   return (
@@ -182,6 +190,6 @@ function BookingDataBox({ booking }) {
       </Footer>
     </StyledBookingDataBox>
   );
-}
+};
 
 export default BookingDataBox;

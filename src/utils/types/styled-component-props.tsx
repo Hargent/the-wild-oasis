@@ -14,4 +14,5 @@ interface ButtonStyleProps {
   type?: string;
   onClick?: () => void;
 }
+
 export type { StyleProps, ButtonStyleProps };
